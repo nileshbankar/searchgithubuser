@@ -92,7 +92,7 @@ const GithubProvider = ({ children }) => {
 
   useEffect(() => {
     fetchRequestRate();
-  }, []);
+  }, [githubUser]);
 
   return (
     <GithubContext.Provider

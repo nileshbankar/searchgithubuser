@@ -31,17 +31,27 @@ const GithubProvider = ({ children }) => {
       // Fetch repo
 
       const url = `${rootUrl}/users/${userData.login}/repos?per_page=100`;
-      const repoResponse = await axios
-        .get(url)
-        .catch((err) => console.log(err));
-      setRepos(repoResponse.data);
+      // const repoResponse = await axios
+      //   .get(url)
+      //   .catch((err) => console.log(err));
+      // setRepos(repoResponse.data);
 
-      // Fetch followers
+      // // Fetch followers
 
-      const followerResponse = await axios
-        .get(userData.followers_url)
-        .catch((err) => console.log(err));
-      setFollowers(followerResponse.data);
+      // const followerResponse = await axios
+      //   .get(userData.followers_url)
+      //   .catch((err) => console.log(err));
+      //  setFollowers(followerResponse.data);
+
+      await Promise.allSettled([
+        axios.get(url),
+        axios.get(userData.followers_url),
+      ]).then((result) => {
+        const status = "fulfilled";
+        const [repos, followers] = result;
+        if (repos.status === status) setRepos(repos.value.data);
+        if (followers.status === status) setFollowers(followers.value.data);
+      });
     } // const userData = await result.data;
     else {
       toggleError(true, `User does not found for search test ${githubUser}`);
